@@ -1,0 +1,7 @@
+keep_js_files.py
+update_json_templates.py
+videoai.templates.json
+find_template.spec
+
+/build/
+/dist/
