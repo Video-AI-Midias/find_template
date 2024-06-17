@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 
-abs_path = Path('C:\\Users\\thiag\\Desktop\\Video AI\\Bot\\data')
+abs_path = Path(__file__).parent.parent
 
 def list_templates(directory: Path):
     templates_list = {}
@@ -52,15 +52,17 @@ def main():
     ]
 
     answers = prompt(questions)
-    print (answers)
     selected_templates = answers["template"]
 
+    template_dirs = []
     for selected_template in selected_templates:
         selected_template = selected_template.split(" - ")[1]
         template_dir = templates_path / templates_dict[selected_template]["name"]
-        string = str(template_dir)
-        subprocess.run(["code", string], shell=True)
+        template_dirs.append(str(template_dir))
     
+    command = ["code"] + template_dirs
+    process = subprocess.Popen(command, shell=True)
+    process.wait()
     subprocess.run("exit", shell=True)
         
 
