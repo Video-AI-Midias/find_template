@@ -1,3 +1,5 @@
+import os
+import signal
 from bson import ObjectId
 from InquirerPy import prompt
 import json
@@ -29,7 +31,7 @@ def list_templates(directory: Path):
     
     sorted_templates = sorted(templates_list.items(), key=lambda x:(x[0][0], x[0][1]))
 
-    return {template_name: {"name": dir_name, "niche": niche} for (niche, template_name), dir_name in sorted_templates}
+    return {template_name: {"id": dir_name, "niche": niche} for (niche, template_name), dir_name in sorted_templates}
 
 def main():
     templates_path = abs_path / "templates"
@@ -57,13 +59,15 @@ def main():
     template_dirs = []
     for selected_template in selected_templates:
         selected_template = selected_template.split(" - ")[1]
-        template_dir = templates_path / templates_dict[selected_template]["name"]
+        template_dir = templates_path / templates_dict[selected_template]["id"]
         template_dirs.append(str(template_dir))
     
     command = ["code"] + template_dirs
     process = subprocess.Popen(command, shell=True)
+    parent_pid = os.getppid()
     process.wait()
-    subprocess.run("exit", shell=True)
+
+    os.kill(parent_pid, signal.SIGTERM)
         
 
 
